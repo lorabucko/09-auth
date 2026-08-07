@@ -1,10 +1,8 @@
 import { cookies } from 'next/headers'
 import { api } from './api'
-import type { Note, NoteTag } from '../../types/note'
+import type { Note } from '../../types/note'
 import type { User } from '../../types/user'
 import type { FetchNotesParams, FetchNotesResponse } from './clientApi'
-
-type TagFilter = NoteTag | 'all'
 
 export const fetchNotes = async ({
   page,
