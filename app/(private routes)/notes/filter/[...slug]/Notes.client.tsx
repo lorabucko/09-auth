@@ -52,7 +52,7 @@ export default function NotesClient({
     refetchOnMount: false,
     placeholderData: keepPreviousData,
   })
-
+  const notes = data?.notes ?? []
   return (
     <main className={css.main}>
       <div className={css.container}>
@@ -76,7 +76,7 @@ export default function NotesClient({
         {isError && <p>Could not fetch the list of notes. Please try again.</p>}
         {isFetching && !isLoading && <p>Updating...</p>}
 
-        {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
+        {notes.length > 0 && <NoteList notes={notes} />}
       </div>
     </main>
   )
