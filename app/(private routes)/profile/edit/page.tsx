@@ -32,6 +32,12 @@ export default function EditProfilePage() {
   if (!user) {
     return null
   }
+  const avatarSrc =
+    user.avatar?.startsWith('http://') ||
+    user.avatar?.startsWith('https://') ||
+    user.avatar?.startsWith('/')
+      ? user.avatar
+      : '/file.svg'
 
   return (
     <main className={css.mainContent}>
@@ -39,7 +45,7 @@ export default function EditProfilePage() {
         <h1 className={css.formTitle}>Edit Profile</h1>
 
         <Image
-          src="avatar"
+          src={avatarSrc}
           alt="User Avatar"
           width={120}
           height={120}
