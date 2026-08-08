@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { checkSession } from '@/lib/api/serverApi'
+import { api } from '@/lib/api/api'
 
 const privateRoutes = ['/profile', '/notes']
 const publicRoutes = ['/sign-in', '/sign-up']
@@ -19,27 +19,26 @@ export async function middleware(request: NextRequest) {
   if (!accessToken) {
     if (refreshToken) {
       try {
-        const response = await checkSession()
-        const setCookie = response.headers['set-cookie']
+        const apiRes = await api.get('/auth/session', {
+          headers: {
+            Cookie: `refreshToken=${refreshToken}`,
+          },
+        })
+
+        const setCookie = apiRes.headers['set-cookie']
 
         if (setCookie) {
           const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie]
 
-          const nextResponse = isPrivateRoute
+          const response = isPrivateRoute
             ? NextResponse.next()
             : NextResponse.redirect(new URL('/profile', request.url))
 
           cookieArray.forEach((cookieStr) => {
-            nextResponse.headers.append('Set-Cookie', cookieStr)
+            response.headers.append('Set-Cookie', cookieStr)
           })
 
-          if (isPublicRoute) {
-            return NextResponse.redirect(new URL('/profile', request.url), {
-              headers: nextResponse.headers,
-            })
-          }
-
-          return nextResponse
+          return response
         }
       } catch {
         if (isPrivateRoute) {
