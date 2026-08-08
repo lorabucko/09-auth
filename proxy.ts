@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { parseSetCookie } from 'cookie'
-import { api } from '@/lib/api/api'
+import { checkSession } from '@/lib/api/serverApi'
 
 const privateRoutes = ['/profile', '/notes']
 const publicRoutes = ['/sign-in', '/sign-up']
@@ -21,23 +21,19 @@ export async function proxy(request: NextRequest) {
 
   if (!accessToken && refreshToken) {
     try {
-      const apiRes = await api.get('/auth/session', {
-        headers: {
-          Cookie: `refreshToken=${refreshToken}`,
-        },
-      })
+      const sessionResponse = await checkSession()
 
       const response = isPrivateRoute
         ? NextResponse.next()
-        : NextResponse.redirect(new URL('/profile', request.url))
+        : NextResponse.redirect(new URL('/', request.url))
 
-      const setCookie = apiRes.headers['set-cookie']
+      const setCookie = sessionResponse.headers['set-cookie']
 
       if (setCookie) {
         const cookieArray = Array.isArray(setCookie) ? setCookie : [setCookie]
 
-        for (const cookieStr of cookieArray) {
-          const parsedCookie = parseSetCookie(cookieStr)
+        for (const cookieString of cookieArray) {
+          const parsedCookie = parseSetCookie(cookieString)
 
           if (!parsedCookie?.name || parsedCookie.value === undefined) {
             continue
