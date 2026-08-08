@@ -4,7 +4,7 @@ import { api } from '@/lib/api/api'
 const privateRoutes = ['/profile', '/notes']
 const publicRoutes = ['/sign-in', '/sign-up']
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const cookieStore = request.cookies
 
