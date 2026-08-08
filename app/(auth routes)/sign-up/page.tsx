@@ -11,7 +11,7 @@ export default function SignUpPage() {
   const setUser = useAuthStore((state) => state.setUser)
   const [error, setError] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError('')
 
